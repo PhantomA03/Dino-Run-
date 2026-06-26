@@ -111,7 +111,7 @@ function handleLose() {
         titleElem.textContent = "EXTINCTION";
         titleElem.classList.add("game-over")
     }
-    if (msgElem) msgElem.textContent = "You became a fossil! CLAW keys to survive again!!!.";
+    if (msgElem) msgElem.textContent = "You became a fossil! CLAW (SPACE) to survive again!!!.";
 
     bgMusic.pause();
     bgMusic.currentTime = 0;
