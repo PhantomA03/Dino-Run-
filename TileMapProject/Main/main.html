@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Tale of Furnitures!</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #viewport {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #map_cont {
+            width: 800px;
+            height: 448px;
+            position: relative;
+            transform-origin: center center;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="viewport">
+        <div class="map_container">
+            <canvas id="layer1" width="800" height="448"></canvas>
+            <canvas id="layer2" width="800" height="448"></canvas>
+        </div>
+    </div>
+
+    <div class="dialouge_overlay">
+        <div class="dialouge_box">
+            <h3 class="dialouge_title">Inspection</h3>
+            <p class="dialouge_text">...</p>
+            <button class="dialouge_btn">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        const mapData = {
+            "compressionlevel":-1,
+            "height": 14,
+            "infinite": false,
+            "layers": [
+                {
+                    "data": [17, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 19,
+                        17, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 19,
+                        17, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 19,
+                        17, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 19,
+                        17, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 19,
+                        17, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 147, 147, 147, 131, 131, 19,
+                        17, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 19,
+                        17, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 19,
+                        17, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 19,
+                        33, 131, 131, 147, 147, 147, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 131, 19,
+                        17, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 147, 19,
+                        17, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 163, 164, 165, 19,
+                        17, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 19,
+                        33, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 188, 35],
+                    "height": 14,
+                    "id": 1,
+                    "name": "Tile Layer 1",
+                    "opacity": 1,
+                    "type": "tilelayer",
+                    "visible": true,
+                    "width": 25,
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 62, 63, 62, 63, 0, 9, 10, 11, 12, 0, 0, 0, 0, 0, 0, 0, 106, 107, 110, 110, 106, 107, 0, 0,
+                        0, 78, 79, 78, 79, 0, 25, 26, 27, 28, 0, 0, 0, 0, 0, 0, 0, 122, 123, 126, 126, 122, 123, 0, 0,
+                        0, 94, 95, 94, 95, 0, 41, 42, 43, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 142, 142, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 141, 0, 0, 141, 0, 0, 0, 64, 64, 64, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 0, 0, 0,
+                        0, 157, 173, 173, 157, 0, 0, 0, 80, 80, 80, 0, 0, 0, 0, 0, 0, 25, 26, 0, 0, 0, 0, 0, 0,
+                        0, 0, 189, 189, 0, 0, 0, 0, 96, 96, 96, 0, 0, 23, 23, 23, 0, 41, 42, 0, 0, 0, 90, 87, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 23, 23, 0, 0, 0, 0, 0, 0, 90, 87, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 85, 86, 0, 0, 0, 0, 0, 0, 0, 0, 103, 104, 105, 0,
+                        0, 162, 162, 0, 0, 0, 0, 0, 0, 0, 205, 101, 102, 206, 0, 0, 0, 0, 0, 0, 0, 119, 120, 121, 0,
+                        0, 178, 178, 0, 0, 0, 0, 0, 0, 0, 221, 117, 118, 222, 0, 0, 0, 0, 39, 0, 0, 135, 136, 137, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 0, 0, 0, 0, 0, 0],
+                    "height": 14,
+                    "id": 2,
+                    "name": "Tile Layer 2",
+                    "opacity": 1,
+                    "type": "tilelayer",
+                    "visible": true,
+                    "width": 25,
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "draworder": "topdown",
+                    "id": 3,
+                    "name": "Object Layer 1",
+                    "objects": [
+                        {
+                            "height": 70.5,
+                            "id": 24,
+                            "name": "bookshelf",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 128.5,
+                            "x": 32,
+                            "y": 53
+                        },
+                        {
+                            "height": 69.5,
+                            "id": 25,
+                            "name": "shelves",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 128,
+                            "x": 192.5,
+                            "y": 53
+                        },
+                        {
+                            "height": 93.5,
+                            "id": 26,
+                            "name": "spoopy",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 191.5,
+                            "x": 544,
+                            "y": 33
+                        },
+                        {
+                            "height": 64.5,
+                            "id": 27,
+                            "name": "weird",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 64,
+                            "x": 703.5,
+                            "y": 223.5
+                        },
+                        {
+                            "height": 71,
+                            "id": 28,
+                            "name": "isolatedShelves",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 64,
+                            "x": 544.5,
+                            "y": 181.5
+                        },
+                        {
+                            "height": 55.5,
+                            "id": 29,
+                            "name": "rugs",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 95.5,
+                            "x": 416.5,
+                            "y": 226
+                        },
+                        {
+                            "height": 70.5,
+                            "id": 30,
+                            "name": "cuttlery",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 95.5,
+                            "x": 255.5,
+                            "y": 179.5
+                        },
+                        {
+                            "height": 65,
+                            "id": 31,
+                            "name": "waiting",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 126.5,
+                            "x": 32.5,
+                            "y": 176.5
+                        },
+                        {
+                            "height": 55,
+                            "id": 32,
+                            "name": "kitchen",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 65.5,
+                            "x": 31.5,
+                            "y": 357.5
+                        },
+                        {
+                            "height": 79.5,
+                            "id": 33,
+                            "name": "dining",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 129.5,
+                            "x": 320,
+                            "y": 337.5
+                        },
+                        {
+                            "height": 42,
+                            "id": 34,
+                            "name": "mat",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 29.5,
+                            "x": 577.5,
+                            "y": 392.5
+                        },
+                        {
+                            "height": 96.5,
+                            "id": 35,
+                            "name": "decor",
+                            "opacity": 1,
+                            "rotation": 0,
+                            "type": "",
+                            "visible": true,
+                            "width": 92.5,
+                            "x": 672.5,
+                            "y": 321.5
+                        }],
+                    "opacity": 1,
+                    "type": "objectgroup",
+                    "visible": true,
+                    "x": 0,
+                    "y": 0
+                }],
+            "tileheight": 32,
+            "tilesets": [
+                {
+                    "firstgid": 1,
+                    "source": "..\/House.tsx"
+                }],
+            "tilewidth": 32,
+            "tilesetColumns": 16,
+            "width": 25
+        };
+
+        const tileSize = mapData.tilewidth;
+        const atlasCol = mapData.tilesetColumns;
+        const mapCols = mapData.width;
+        const mapRows = mapData.height;
+        const mapHeight = mapRows * tileSize;
+        const mapWidth = mapCols * tileSize;
+
+        const ctx1 = document.getElementById('layer1').getContext('2d');
+        const ctx2 = document.getElementById('layer2').getContext('2d');
+
+        const mapContainer = document.getElementById('map_container');
+        // const bgMusic = document.getElementById();
+
+        // Dialouges
+        //
+        
+        const tileAtlas = new Image();
+        tileAtlas.src = 'house_inside.png';
+        tileAtlas.onload = theEngine;
+
+        function theEngine() {
+            renderLayer1();
+            setUpFurniture();
+        }
+
+        function renderLayer1() {
+            let mapIndex = 0;
+            for (let col = 0; col < mapHeight; col += tileSize) {
+                for (let row = 0; row < mapWidth; row += tileSize) {
+                    let tileVal = mapData.layers[0].data[mapIndex];
+                    if (tileVal !== 0) {
+                        tileVal -= 1
+                        let sourceY = Math.floor(tileVal / atlasCol) * tileSize;
+                        let sourceX = (tileVal % atlasCol) * tileSize;
+                        ctx1.drawImage(
+                            tileAtlas,
+                            sourceX,
+                            sourceY,
+                            tileSize,
+                            tileSize,
+                            row,
+                            col,
+                            tileSize,
+                            tileSize
+                        );
+                    }
+                    mapIndex++;
+                }
+            }
+        }
+
+        function setUpFurniture() {
+            
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+{
+    "activeFile": "Scene01.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "House.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1.5
+        },
+        "PicoCity.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 5.5
+        },
+        "Scene01.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 230.33333333333331,
+                "y": 244.99999999999997
+            }
+        }
+    },
+    "last.exportedFilePath": "F:/BUCC/Main",
+    "last.imagePath": "F:/Tot",
+    "map.height": 14,
+    "map.lastUsedExportFilter": "JavaScript map files (*.js)",
+    "map.lastUsedFormat": "tmx",
+    "map.width": 25,
+    "openFiles": [
+        "House.tsx",
+        "Scene01.tmx"
+    ],
+    "project": "GSAP_Project.tiled-project",
+    "recentFiles": [
+        "House.tsx",
+        "Scene01.tmx",
+        "PicoCity.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
