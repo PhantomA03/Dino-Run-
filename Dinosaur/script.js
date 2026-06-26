@@ -9,9 +9,13 @@ const SPEED_SCALE_INCREASE = 0.00001;
 const worldElem = document.querySelector("[data-world]");
 const scoreElem = document.querySelector("[data-score]");
 const startElem = document.querySelector("[data-start-screen]");
+const hiscoreElem = document.querySelector("[data-highscore]")
 
 const bgMusic = new Audio("sounds/moodmode-retro-game-arcade-236133.mp3");
 bgMusic.loop = true;
+
+let highscore = Number(localStorage.getItem("highscore")) || 0;
+displayHighScore();
 
 setPixelToWorldScale();
 window.addEventListener("resize", setPixelToWorldScale);
@@ -56,6 +60,17 @@ function updateSpeedScale(delta) {
 function updateScore(delta) {
     score += delta * 0.01
     scoreElem.textContent = Math.floor(score);
+
+    if (score > highscore) {
+        highscore = score;
+        displayHighScore();
+    }
+}
+
+function displayHighScore() {
+    if (hiscoreElem) {
+        hiscoreElem.textContent = Math.floor(highscore)
+    }
 }
 
 function handleStart() {
@@ -85,8 +100,22 @@ function setPixelToWorldScale() {
 
 function handleLose() {
     setDinoLose();
+
+    localStorage.setItem("highscore", Math.floor(highscore));
+
+    const titleElem = startElem.querySelector("[data-game-title]");
+    const msgElem = startElem.querySelector("[data-msg]");
+    
+    if (titleElem)
+    {
+        titleElem.textContent = "EXTINCTION";
+        titleElem.classList.add("game-over")
+    }
+    if (msgElem) msgElem.textContent = "You became a fossil! CLAW keys to survive again!!!.";
+
     bgMusic.pause();
     bgMusic.currentTime = 0;
+
     setTimeout(() => {
         document.addEventListener("keydown", handleStart, { once: true })
         startElem.classList.remove("hide");
